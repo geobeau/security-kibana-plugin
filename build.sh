@@ -1,7 +1,7 @@
 #!/bin/bash
-KIBANA_VERSION="$1"
-ELASTICSEARCH_SECURITY_PLUGIN_VERSION="$2"
-COMMAND="$3"
+KIBANA_VERSION=$(cat package.json| jq .version | cut -d'"' -f2)
+ELASTICSEARCH_SECURITY_PLUGIN_VERSION="$1"
+COMMAND="$2"
 
 # sanity checks for options
 if [ -z "$KIBANA_VERSION" ] || [ -z "$ELASTICSEARCH_SECURITY_PLUGIN_VERSION" ] || [ -z "$COMMAND" ]; then
@@ -15,14 +15,9 @@ if [ "$COMMAND" != "deploy" ] && [ "$COMMAND" != "install" ]; then
     exit 1;
 fi
 
-# sanity checks for maven
-if [ -z "$MAVEN_HOME" ]; then
-    echo "MAVEN_HOME not set"
-    exit 1;
-fi
 
 echo "+++ Checking Maven version +++"
-$MAVEN_HOME/bin/mvn -version
+mvn -version
 if [ $? != 0 ]; then
     echo "Checking maven version failed";
     exit 1;
@@ -122,18 +117,18 @@ cp -a "$DIR/public" "$COPYPATH"
 
 if [ "$COMMAND" = "deploy" ] ; then
     echo "+++ mvn clean deploy -Prelease +++"
-    $MAVEN_HOME/bin/mvn clean deploy -Prelease
+    mvn clean deploy -Prelease
     if [ $? != 0 ]; then
-        echo "$MAVEN_HOME/bin/mvn clean deploy -Prelease failed";
+        echo "mvn clean deploy -Prelease failed";
         exit 1;
     fi
 fi
 
 if [ "$COMMAND" = "install" ] ; then
     echo "+++ mvn clean install +++"
-    $MAVEN_HOME/bin/mvn clean install
+    mvn clean install
     if [ $? != 0 ]; then
-        echo "$MAVEN_HOME/bin/mvn clean install failed";
+        echo "mvn clean install failed";
         exit 1;
     fi
 fi
