@@ -1,7 +1,7 @@
 #!/bin/bash
-KIBANA_VERSION="$1"
-ELASTICSEARCH_SECURITY_PLUGIN_VERSION="$2"
-COMMAND="$3"
+KIBANA_VERSION=$(cat package.json| jq .version | cut -d'"' -f2)
+ELASTICSEARCH_SECURITY_PLUGIN_VERSION="$1"
+COMMAND="$2"
 
 # sanity checks for options
 if [ -z "$KIBANA_VERSION" ] || [ -z "$ELASTICSEARCH_SECURITY_PLUGIN_VERSION" ] || [ -z "$COMMAND" ]; then
